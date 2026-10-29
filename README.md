@@ -2,42 +2,51 @@
 
 ## 1. Overview
 
-This project is a Java application designed to simulate smart city infrastructure and route planning using graph algorithms.
+This project is a Java application that simulates smart city infrastructure and route planning using graph algorithms.
 
-The main objective is to connect city districts efficiently, analyze connectivity, and calculate shortest routes between locations.
+The main objectives are to:
+
+- Connect city districts with minimum infrastructure cost.
+- Analyze connectivity between districts.
+- Identify strongly connected components.
+- Determine valid dependency ordering.
+- Calculate shortest routes between locations.
+- Evaluate algorithm performance on different graph sizes.
 
 The city is represented as a weighted graph:
 
 - **Vertices (V):** City districts or locations.
 - **Edges (E):** Roads or infrastructure connections.
-- **Weights:** Construction costs or travel distances.
+- **Weights:** Road construction costs or travel distances.
 
-The application supports both directed and undirected graphs.
+The application supports directed and undirected graphs.
 
-Undirected graphs are used for minimum spanning tree calculations, while directed graphs represent one-way roads and infrastructure dependencies.
+Undirected graphs are used for minimum spanning tree calculations. Directed graphs represent one-way roads and infrastructure dependencies.
 
-The project implements the following algorithms:
+### Implemented Algorithms
 
-1. Kruskal's Algorithm
-2. Prim's Algorithm
-3. Disjoint Set Union (DSU)
-4. Topological Sorting
-5. Kosaraju's Algorithm for Strongly Connected Components
+1. Disjoint Set Union (DSU)
+2. Kruskal's Minimum Spanning Tree
+3. Prim's Minimum Spanning Tree
+4. Topological Sorting using Kahn's Algorithm
+5. Strongly Connected Components using Kosaraju's Algorithm
 6. Dijkstra's Shortest Path Algorithm
 
-The application also includes performance benchmarking, complexity analysis, correctness testing, and graphical visualization of experimental results.
+The project also includes performance benchmarking, complexity analysis, automated correctness checks, experimental tables, and graphical visualizations.
 
 ---
 
 ## 2. Implementation
 
-The project is implemented in Java and organized into separate packages to improve readability, maintainability, and modularity.
+The application is implemented in Java using a modular structure.
+
+Each algorithm is organized into a separate package to improve readability, maintainability, and testing.
 
 ### 2.1 Graph Representation
 
 The `Graph` class represents the city's infrastructure using an adjacency list.
 
-An adjacency list was selected because it efficiently stores graph connections and is suitable for sparse graphs.
+An adjacency list was selected because it stores graph connections efficiently and is suitable for sparse graphs.
 
 For undirected graphs, connections are stored in both directions in the adjacency lists.
 
@@ -45,16 +54,20 @@ For directed graphs, each connection represents a specific direction.
 
 ### 2.2 Disjoint Set Union (DSU)
 
-The DSU data structure manages connected components.
+DSU is a data structure used to manage connected components.
 
-It implements:
+It supports two main operations:
 
 - `find()` — determines the representative of a component.
 - `union()` — merges two different components.
-- Path Compression — reduces the length of paths during find operations.
-- Union by Rank — keeps the DSU tree balanced.
 
-These optimizations improve performance by making repeated operations nearly constant in amortized time.
+The implementation includes two optimizations:
+
+**Path Compression:** Reduces the depth of DSU trees during find operations.
+
+**Union by Rank:** Keeps the DSU trees balanced when components are merged.
+
+These techniques make repeated operations efficient, with nearly constant amortized time complexity.
 
 ### 2.3 Kruskal's Algorithm
 
@@ -76,7 +89,7 @@ For disconnected graphs, it produces a minimum spanning forest and reports that 
 
 Prim's algorithm also calculates a minimum spanning tree.
 
-It uses a priority queue to select edges with the smallest available weights.
+The implementation uses a priority queue to select minimum-weight edges.
 
 Implementation steps:
 
@@ -88,7 +101,7 @@ Implementation steps:
 
 For disconnected graphs, the implementation supports a minimum spanning forest.
 
-Both Kruskal and Prim must produce the same total MST weight for a connected undirected weighted graph.
+Both Kruskal and Prim must produce the same total MST weight for connected undirected weighted graphs.
 
 ### 2.5 Topological Sorting
 
@@ -98,7 +111,7 @@ The implementation uses Kahn's algorithm.
 
 Steps:
 
-1. Calculate the in-degree of each vertex.
+1. Calculate the in-degree of every vertex.
 2. Find vertices with zero in-degree.
 3. Add these vertices to the ordering.
 4. Remove their outgoing dependencies.
@@ -112,12 +125,12 @@ In this case, a valid topological ordering does not exist.
 
 The project uses Kosaraju's algorithm to identify strongly connected components in directed graphs.
 
-A strongly connected component is a group of vertices where every vertex is reachable from every other vertex in the same group.
+A strongly connected component is a group of vertices where every vertex is reachable from every other vertex in the same component.
 
-Kosaraju's algorithm works in two main phases:
+Kosaraju's algorithm consists of two main phases:
 
 1. Perform DFS and determine the processing order.
-2. Reverse the graph and perform DFS in the reverse finishing order.
+2. Reverse the graph and perform DFS in reverse finishing order.
 
 The implementation uses iterative DFS.
 
@@ -125,9 +138,9 @@ The algorithm identifies all strongly connected components.
 
 ### 2.7 Dijkstra's Algorithm
 
-Dijkstra's algorithm calculates shortest paths from a selected source vertex to all reachable vertices.
+Dijkstra's algorithm calculates the shortest paths from a selected source vertex to all reachable vertices.
 
-The implementation uses a priority queue and an adjacency list.
+The implementation uses a priority queue and adjacency list.
 
 Steps:
 
@@ -138,11 +151,11 @@ Steps:
 5. Update distances when shorter paths are found.
 6. Continue until the priority queue is empty.
 
-The algorithm records both shortest distances and reconstructed paths.
+The algorithm records shortest distances and reconstructed paths.
 
 Unreachable vertices are handled separately.
 
-Dijkstra's algorithm requires non-negative edge weights because negative weights invalidate the greedy assumption used for shortest-path calculations.
+Dijkstra's algorithm requires non-negative edge weights because negative weights invalidate the greedy assumption used in shortest-path calculations.
 
 ---
 
@@ -154,7 +167,7 @@ Let:
 - E = Number of edges
 - α(V) = Inverse Ackermann function
 
-The following complexity bounds assume adjacency lists, comparison-based sorting, optimized DSU, and binary priority queues.
+The complexity analysis assumes adjacency lists, comparison-based sorting, optimized DSU, and binary priority queues.
 
 | Algorithm | Time Complexity | Space Complexity |
 |---|---|---|
@@ -165,27 +178,59 @@ The following complexity bounds assume adjacency lists, comparison-based sorting
 | Kosaraju SCC | O(V + E) | O(V + E) |
 | Dijkstra | O((V + E) log(V + E)) | O(V + E) |
 
-### Complexity Discussion
+### 3.1 DSU Complexity
 
-**DSU:** Path compression and union by rank reduce tree depth and improve the efficiency of repeated find and union operations.
+Path compression and union by rank reduce tree depth and improve the efficiency of repeated operations.
 
-**Kruskal:** Sorting edges is the main computational cost. DSU helps detect cycles efficiently.
+The amortized time complexity of each operation is O(α(V)), where α is the inverse Ackermann function, which grows extremely slowly.
 
-**Prim:** Performance depends on priority queue operations and graph size.
+The space complexity is O(V).
 
-**Topological Sort:** Every vertex and edge is processed a bounded number of times, resulting in linear time complexity.
+### 3.2 Kruskal Complexity
 
-**Kosaraju:** Two DFS passes and construction of the reversed graph result in linear time complexity.
+Kruskal sorts edges by weight, requiring O(E log E).
 
-**Dijkstra:** Priority queue operations and edge relaxation determine the running time.
+DSU operations add O(Eα(V)) amortized time.
 
-As the number of vertices and edges grows, the algorithms generally require more time and memory.
+The algorithm uses O(V + E) additional space, including the data structures required to store graph edges and components.
+
+### 3.3 Prim Complexity
+
+Prim uses a binary priority queue.
+
+In this implementation, candidate edges may be inserted into the priority queue, giving O((V + E) log(V + E)) time.
+
+Space complexity is O(V + E).
+
+### 3.4 Topological Sorting Complexity
+
+Kahn's algorithm processes each vertex and edge a bounded number of times.
+
+Time complexity: O(V + E).
+
+Auxiliary space complexity: O(V).
+
+### 3.5 Kosaraju Complexity
+
+Kosaraju performs two DFS passes and constructs the reversed graph.
+
+Time complexity: O(V + E).
+
+Space complexity: O(V + E).
+
+### 3.6 Dijkstra Complexity
+
+Dijkstra uses a binary priority queue to process candidate shortest distances.
+
+Time complexity: O((V + E) log(V + E)).
+
+Space complexity: O(V + E).
 
 ---
 
 ## 4. Experimental Setup
 
-The performance of the implemented algorithms was evaluated using graphs of different sizes.
+The performance of the algorithms was evaluated using three graph configurations.
 
 ### 4.1 Graph Configurations
 
@@ -199,19 +244,19 @@ The performance of the implemented algorithms was evaluated using graphs of diff
 
 The experiments follow these conditions:
 
-- Each algorithm is executed five times for each graph size.
-- Three warm-up runs are performed before measurement.
+- Every algorithm is executed five times for each graph size.
+- Three warm-up runs are performed before measurements.
 - Execution time is measured using `System.nanoTime()`.
-- Average execution time is calculated from the five measured runs.
-- Relevant algorithm operations are counted.
+- Average execution time is calculated from five measured runs.
+- Relevant operations are counted.
 - Graph generation time is excluded from algorithm execution measurements.
-- A fixed random seed is used to ensure reproducibility.
+- Fixed random seeds ensure reproducibility.
 
 ### 4.3 Graph Generation
 
-The application generates reproducible graphs using a fixed random seed.
+The application generates reproducible graphs using fixed random seeds.
 
-For minimum spanning tree experiments, connected undirected graphs are generated by constructing a spanning tree first and then adding additional edges.
+For minimum spanning tree experiments, connected undirected graphs are generated by constructing a spanning tree first and adding additional edges.
 
 For directed DAG experiments, edges are oriented from lower-numbered vertices to higher-numbered vertices to prevent cycles.
 
@@ -223,22 +268,23 @@ Edge weights are positive integers between 1 and 100.
 
 The experiments were executed locally using:
 
-- Operating system: macOS
-- Development environment: IntelliJ IDEA
-- Java runtime: OpenJDK 25.0.2
-- Build system: Maven
+- **Operating System:** macOS
+- **Development Environment:** IntelliJ IDEA
+- **Java Runtime:** OpenJDK 25.0.2
+- **Build System:** Maven
+- **Programming Language:** Java
 
-The exact execution times may vary depending on hardware performance, JVM optimizations, operating system scheduling, and system load.
+Execution times may vary depending on hardware performance, JVM optimizations, background processes, and operating system scheduling.
 
 ---
 
 ## 5. Experimental Results
 
-The following tables contain measured results from the local benchmark execution.
+Each algorithm was executed five times for each graph size.
 
-Each time value represents the average of five executions.
+The following tables present the measured average execution times and average operation counts.
 
-Execution time is converted from nanoseconds to milliseconds for easier comparison.
+Execution times were converted from nanoseconds to milliseconds for easier interpretation.
 
 ### 5.1 Small Graph — 10 Vertices, 30 Edges
 
@@ -270,16 +316,16 @@ Execution time is converted from nanoseconds to milliseconds for easier comparis
 | Prim | 1.2993 | 125936 |
 | Kosaraju | 1.2522 | 16000 |
 | Topological DAG | 0.5928 | 11000 |
+| Topological Directed | 0.0708 | 5037 |
+| Dijkstra | 1.1046 | 11921 |
 
-The remaining measurements for Topological Directed and Dijkstra on the large graph should be read from the final two rows of the generated `benchmarks.csv` file.
+### 5.4 Complete Experimental Data
 
-### 5.4 Experimental Data
-
-The complete benchmark dataset is stored in:
+The complete experimental results are stored in:
 
 `results/tables/benchmarks.csv`
 
-This CSV file contains the following fields:
+The CSV file includes:
 
 - Algorithm name
 - Number of vertices
@@ -288,19 +334,21 @@ This CSV file contains the following fields:
 - Average execution time in nanoseconds
 - Average operation count
 
+A total of 18 benchmark configurations were evaluated.
+
 ### 5.5 Execution Time vs Number of Vertices
 
 ![Execution Time vs Vertices](results/plots/execution_time_vs_vertices.png)
 
-This graph illustrates how execution time changes as the number of vertices increases.
+This plot illustrates how execution time changes when graph size increases from 10 to 1000 vertices.
 
 ### 5.6 Execution Time vs Number of Edges
 
 ![Execution Time vs Edges](results/plots/execution_time_vs_edges.png)
 
-This graph illustrates execution time across graph configurations with increasing numbers of edges.
+This plot illustrates execution time for graph configurations containing 30, 500, and 5000 edges.
 
-Because both vertices and edges increase together in the prescribed datasets, these experiments do not independently isolate the effect of each variable.
+Because both vertices and edges increase together in these configurations, these experiments do not independently isolate the effect of each variable.
 
 ---
 
@@ -308,129 +356,155 @@ Because both vertices and edges increase together in the prescribed datasets, th
 
 ### 6.1 Kruskal vs Prim
 
-Both Kruskal's and Prim's algorithms calculate minimum spanning trees.
+Both algorithms calculate minimum spanning trees.
 
-In the sample city graph, both algorithms produced the same minimum spanning tree weight:
+For the sample connected undirected graph, both produced the same result:
 
 **Total MST Weight = 11**
 
-This confirms agreement between the two implementations for the sample connected undirected graph.
+This confirms agreement between the two implementations for the sample graph.
 
-Experimental comparison:
+Performance comparison:
 
-| Graph Size | Kruskal (ms) | Prim (ms) |
+| Graph Size | Kruskal (ms) | Prim (ms) | Faster Algorithm |
+|---|---:|---:|---|
+| Small | 0.0299 | 0.0723 | Kruskal |
+| Medium | 0.3716 | 0.2903 | Prim |
+| Large | 1.1032 | 1.2993 | Kruskal |
+
+Kruskal was faster on the small and large graph configurations.
+
+Prim performed better on the medium graph configuration.
+
+The results demonstrate that actual performance depends on graph size, graph structure, sorting, priority queue operations, and implementation overhead.
+
+### 6.2 DSU Optimization
+
+DSU improves Kruskal's efficiency by quickly determining whether two vertices belong to different components.
+
+Path compression reduces the length of repeated search paths.
+
+Union by rank prevents DSU trees from becoming unnecessarily deep.
+
+Together, these optimizations improve the performance of connectivity checks.
+
+### 6.3 Strongly Connected Components
+
+Kosaraju's algorithm produced the following results:
+
+| Vertices | Time (ms) | Operations |
 |---|---:|---:|
-| Small | 0.0299 | 0.0723 |
-| Medium | 0.3716 | 0.2903 |
-| Large | 1.1032 | 1.2993 |
+| 10 | 0.0571 | 100 |
+| 100 | 0.3143 | 1600 |
+| 1000 | 1.2522 | 16000 |
 
-Kruskal was faster on the small and large test configurations, while Prim was faster on the medium configuration.
+The operation count increases with the number of vertices and edges.
 
-These measurements show that actual performance depends on implementation details, sorting, priority queue overhead, and graph structure.
-
-The benchmark's operation counters measure different implementation-specific activities. Therefore, the operation totals should not be treated as identical units when comparing different algorithms.
-
-### 6.2 DSU Performance
-
-DSU improves the efficiency of Kruskal's algorithm.
-
-Path compression reduces the cost of repeated find operations.
-
-Union by rank prevents the formation of unnecessarily deep trees.
-
-Together, these techniques make component management efficient even when the graph becomes larger.
-
-### 6.3 SCC Performance
-
-Kosaraju's algorithm showed the following execution times:
-
-| Vertices | Time (ms) |
-|---:|---:|
-| 10 | 0.0571 |
-| 100 | 0.3143 |
-| 1000 | 1.2522 |
-
-Execution time increased as graph size increased.
-
-This observation is consistent with the theoretical O(V + E) complexity, although runtime measurements are also affected by JVM and system overhead.
+The observed trend is consistent with the theoretical O(V + E) complexity.
 
 ### 6.4 Topological Sorting
 
-The application tests both directed acyclic graphs and directed graphs containing cycles.
+The application evaluates two types of directed graphs:
+
+- Directed acyclic graphs (DAGs)
+- Directed graphs containing cycles
 
 For DAGs, the algorithm returns a valid topological ordering.
 
-For cyclic graphs, the algorithm detects that topological ordering is impossible.
+For cyclic graphs, it detects that a valid topological ordering is impossible.
 
-In the sample execution, the result was:
+Sample output:
 
-`hasCycle=true`
+```text
+Topological sort: Result[order=[], hasCycle=true, operations=5]
+```
 
-This demonstrates successful cycle detection.
+The cyclic benchmark may finish earlier because Kahn's algorithm cannot continue once no vertices with zero in-degree remain.
 
-Cyclic graphs may finish earlier when no vertices with zero in-degree remain, even though the worst-case complexity is still O(V + E).
+The worst-case complexity remains O(V + E).
 
 ### 6.5 Dijkstra Performance
 
-The measured Dijkstra execution times include:
+| Vertices | Average Time (ms) | Operations |
+|---|---:|---:|
+| 10 | 0.0391 | 78 |
+| 100 | 0.5525 | 1201 |
+| 1000 | 1.1046 | 11921 |
 
-| Vertices | Time (ms) |
-|---:|---:|
-| 10 | 0.0391 |
-| 100 | 0.5525 |
+The execution time and operation count generally increase with graph size.
 
-The observed execution time increased with graph size.
+The algorithm calculates shortest paths using non-negative edge weights and a priority queue.
 
-Dijkstra's algorithm calculates shortest distances and paths for non-negative weighted graphs.
+For the sample graph, the shortest path from vertex 0 to vertex 4 was:
 
-Vertices that cannot be reached from the source are reported as unreachable.
+`0 → 2 → 1 → 3 → 4`
 
-Negative edge weights are rejected because they violate Dijkstra's algorithm assumptions.
+**Total Distance = 11**
 
-### 6.6 Experimental Limitations
+The algorithm also handles unreachable vertices by reporting them separately.
 
-Benchmark execution time can vary between runs due to:
+### 6.6 Operation Counts
+
+The benchmark counts relevant operations performed by each algorithm.
+
+However, these counters represent different algorithm-specific activities.
+
+Therefore, operation totals provide useful information about work performed but should not be interpreted as identical units across all algorithms.
+
+### 6.7 Experimental Limitations
+
+Execution time may vary between benchmark runs due to:
 
 - CPU performance
 - JVM warm-up and JIT compilation
-- Operating system scheduling
+- Background applications
 - Memory management
-- Background processes
-- Graph structure
+- Operating system scheduling
+- Graph density and structure
 
-Small graphs have very short execution times, so measurement noise can have a substantial effect.
+Small graphs execute quickly, so measurement noise can influence results substantially.
 
-The reported averages provide a useful comparison but should not be interpreted as exact universal performance values.
+The experimental averages provide useful comparisons but do not establish universal performance rankings.
 
 ---
 
 ## 7. Testing and Correctness
 
-The project includes automated correctness checks.
+The project includes automated correctness checks for the graph algorithms.
 
-The following cases are tested:
+### 7.1 Test Cases
 
 | Test Case | Expected Behavior |
 |---|---|
-| Connected graph | Minimum spanning tree is found |
+| Connected undirected graph | MST is calculated |
 | Disconnected graph | Disconnection is detected |
-| Multiple valid MSTs | Algorithms return the same minimum total weight |
-| Duplicate edge weights | MST algorithms handle equal weights |
-| Directed acyclic graph | Valid topological order is returned |
+| Multiple valid MSTs | Same minimum total weight |
+| Duplicate edge weights | Algorithms handle equal weights |
+| Directed acyclic graph | Valid topological ordering |
 | Directed cyclic graph | Cycle is detected |
-| Strongly connected components | Every vertex belongs to exactly one SCC |
+| Strongly connected components | Every vertex belongs to one SCC |
 | Unreachable vertices | Dijkstra reports unreachable locations |
 | Single-vertex graph | Algorithms handle the special case |
 | Negative edge weights | Dijkstra rejects invalid input |
 | DSU operations | Find and union work correctly |
 
-### Test Execution
+### 7.2 Correctness Verification
+
+The following conditions are checked:
+
+1. Kruskal and Prim return the same MST weight on connected undirected weighted graphs.
+2. Topological ordering is valid for DAGs.
+3. Directed cycles are detected.
+4. Each vertex belongs to exactly one strongly connected component.
+5. Dijkstra calculates correct shortest distances for non-negative edge weights.
+
+### 7.3 Test Execution
 
 The test class is:
 
 `com.smartcity.SelfTest`
 
-The tests were executed successfully on macOS using IntelliJ IDEA.
+The tests were executed in IntelliJ IDEA on macOS.
 
 Output:
 
@@ -440,9 +514,13 @@ PASS: 29 correctness checks
 Process finished with exit code 0
 ```
 
-All 29 built-in correctness checks passed.
+**All 29 built-in correctness checks passed successfully.**
 
-The Maven test lifecycle also completed successfully with `BUILD SUCCESS`.
+The Maven test lifecycle also completed with:
+
+```text
+BUILD SUCCESS
+```
 
 ---
 
@@ -458,7 +536,7 @@ The Maven test lifecycle also completed successfully with `BUILD SUCCESS`.
 
 Open the project directory in IntelliJ IDEA.
 
-Make sure the Java SDK is configured correctly.
+Make sure the project SDK is configured correctly.
 
 ### Step 2 — Run the Main Application
 
@@ -476,13 +554,13 @@ The console displays:
 - Strongly connected components
 - Topological sorting results
 
-### Step 3 — Execute Correctness Tests
+### Step 3 — Run Correctness Tests
 
 Open:
 
 `src/main/java/com/smartcity/SelfTest.java`
 
-Run the `SelfTest` class.
+Run `SelfTest.main()`.
 
 Expected output:
 
@@ -490,43 +568,45 @@ Expected output:
 PASS: 29 correctness checks
 ```
 
-### Step 4 — Execute Benchmark
+### Step 4 — Run Benchmark
 
-Run:
+Run the class:
 
 `com.smartcity.experiment.Benchmark`
 
-The program measures algorithm execution time and saves the results to:
+The program measures execution time and saves results to:
 
 `results/tables/benchmarks.csv`
 
-### Step 5 — Generate Performance Plots
+### Step 5 — Generate Plots
 
 The project includes the Python script:
 
 `scripts/plot_results.py`
 
-To regenerate the plots, install Python 3 and matplotlib, then run:
+To regenerate performance plots, install Python 3 and matplotlib.
+
+Run:
 
 ```bash
 python3 -m pip install matplotlib
 python3 scripts/plot_results.py
 ```
 
-The generated plots are stored in:
+The resulting plots are stored in:
 
 - `results/plots/execution_time_vs_vertices.png`
 - `results/plots/execution_time_vs_edges.png`
 
 ---
 
-## 9. GitHub Repository and Project Structure
+## 9. Project Structure and GitHub
 
-Repository:
+### Repository
 
 https://github.com/aerkenovva/assignment-3-smart-city
 
-Project structure:
+### Project Structure
 
 ```text
 assignment-3-smart-city/
@@ -535,6 +615,8 @@ assignment-3-smart-city/
 │   │   └── java/
 │   │       └── com/
 │   │           └── smartcity/
+│   │               ├── Main.java
+│   │               ├── SelfTest.java
 │   │               ├── graph/
 │   │               ├── dsu/
 │   │               ├── mst/
@@ -554,32 +636,34 @@ assignment-3-smart-city/
 └── README.md
 ```
 
-The project follows a modular design, with separate classes for different graph algorithms.
+The project follows a modular structure with separate packages for graph algorithms.
 
-The GitHub repository contains the source code, experiment results, documentation, and visualization files.
+The GitHub repository is used to store Java source code, documentation, experiment results, and visualizations.
 
-Development changes should be recorded using meaningful Git commits and feature branches when appropriate.
+Changes can be organized using meaningful Git commits and feature branches.
 
-Generated build outputs and IDE-specific files should not be included in the repository.
+Generated build outputs and IDE-specific files should be excluded from version control.
 
 ---
 
 ## 10. Conclusion
 
-This project demonstrates how graph algorithms can be applied to smart city infrastructure planning.
+This project demonstrates the application of graph algorithms to smart city infrastructure planning.
 
-Kruskal's and Prim's algorithms help determine minimum-cost infrastructure networks.
+**Kruskal's and Prim's algorithms** help determine minimum-cost infrastructure networks.
 
-DSU efficiently manages connected components.
+**Disjoint Set Union** efficiently manages connected components and supports Kruskal's algorithm.
 
-Topological sorting provides a valid ordering for directed acyclic infrastructure dependencies.
+**Topological Sorting** determines a valid ordering of infrastructure dependencies when the directed graph contains no cycles.
 
-Kosaraju's algorithm identifies strongly connected components in directed road networks.
+**Kosaraju's Algorithm** identifies strongly connected components in directed networks.
 
-Dijkstra's algorithm calculates shortest routes between districts when edge weights are non-negative.
+**Dijkstra's Algorithm** calculates shortest routes between city districts with non-negative edge weights.
 
-The experimental analysis demonstrates how algorithm performance changes across different graph sizes.
+The experimental evaluation demonstrates how execution time and operation counts change as graph sizes increase.
+
+Results show that Kruskal and Prim can have different execution times while producing the same minimum spanning tree weight.
 
 All 29 built-in correctness checks passed, and the application executed successfully on macOS using Java and IntelliJ IDEA.
 
-Overall, the project demonstrates the practical applications, strengths, limitations, and performance characteristics of graph algorithms for city infrastructure and route planning.
+Overall, the project demonstrates the strengths, limitations, and practical applications of graph algorithms for efficient smart city infrastructure and route planning.
